@@ -1,0 +1,6 @@
+{
+    "name": "vendor/client",
+    "require": {
+        "curl/curl": "^2.3"
+    }
+}
