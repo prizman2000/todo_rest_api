@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 class PostController extends AbstractController
 {
@@ -42,21 +41,24 @@ class PostController extends AbstractController
 
                 $data = [
                     'status' => Response::HTTP_OK,
-                    'success' => 'Post added successfully'
+                    'success' => 'Post added successfully',
                 ];
+
                 return $this->response($data);
             } catch (\Exception $e) {
                 $data = [
                     'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                     'errors' => 'Data not valid',
                 ];
+
                 return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
-        }catch (\Exception) {
+        } catch (\Exception) {
             $error = [
                 'status' => Response::HTTP_UNAUTHORIZED,
                 'errors' => 'Unauthorized',
             ];
+
             return $this->response($error, Response::HTTP_UNAUTHORIZED);
         }
     }
@@ -74,6 +76,7 @@ class PostController extends AbstractController
                     'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                     'errors' => 'Data not valid',
                 ];
+
                 return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $post->setTitle($request->get('title'));
@@ -85,14 +88,16 @@ class PostController extends AbstractController
 
             $data = [
                 'status' => Response::HTTP_OK,
-                'success' => 'Post added successfully'
+                'success' => 'Post added successfully',
             ];
+
             return $this->response($data);
         } catch (\Exception $e) {
             $data = [
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => 'Data not valid',
             ];
+
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -104,24 +109,26 @@ class PostController extends AbstractController
             $user = $this->getUser();
             $posts = $postRepository->findAll();
 
-            $postArray = array();
+            $postArray = [];
 
             foreach ($posts as $post) {
                 if ($post->getUser()->getId() === $user->getId()) {
                     $postA = [
-                        "id" => $post->getId(),
-                        "title" => $post->getTitle(),
-                        "description" => $post->getDescription()
+                        'id' => $post->getId(),
+                        'title' => $post->getTitle(),
+                        'description' => $post->getDescription(),
                     ];
                     array_push($postArray, $postA);
                 }
             }
+
             return $this->response($postArray);
         } catch (\Exception $e) {
             $data = [
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => 'Data not valid',
             ];
+
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -136,14 +143,15 @@ class PostController extends AbstractController
             if ($post->getUser()->getId() !== $user->getId()) {
                 $data = [
                     'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-                    'errors' => 'Data not valid'
+                    'errors' => 'Data not valid',
                 ];
+
                 return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $postA = [
-                "title" => $post->getTitle(),
-                "description" => $post->getDescription()
+                'title' => $post->getTitle(),
+                'description' => $post->getDescription(),
             ];
 
             return $this->response($postA);
@@ -152,6 +160,7 @@ class PostController extends AbstractController
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => 'Data not valid',
             ];
+
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -166,8 +175,9 @@ class PostController extends AbstractController
             if ($post->getUser()->getId() !== $user->getId()) {
                 $data = [
                     'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-                    'errors' => 'Data not valid'
+                    'errors' => 'Data not valid',
                 ];
+
                 return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
@@ -176,7 +186,7 @@ class PostController extends AbstractController
             $entityManager->flush();
             $res = [
                 'status' => Response::HTTP_OK,
-                'success' => 'Post deleted successfully'
+                'success' => 'Post deleted successfully',
             ];
 
             return $this->response($res);
@@ -185,6 +195,7 @@ class PostController extends AbstractController
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => 'Data not valid',
             ];
+
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -194,13 +205,14 @@ class PostController extends AbstractController
         return new JsonResponse($data, $status, $headers);
     }
 
-    private function transformJsonBody (Request $request): Request
+    private function transformJsonBody(Request $request): Request
     {
         $data = json_decode($request->getContent(), true);
-        if ($data === null) {
+        if (null === $data) {
             return $request;
         }
         $request->request->replace($data);
+
         return $request;
     }
 }

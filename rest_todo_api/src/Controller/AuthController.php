@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * Authorization Controller.
+ *
+ * @category Controller
+ *
+ * @author   Levedev Viacheslav <prizman2000@mail.ru>
+ * @license  aaa
+ *
+ * @see
+ */
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -25,9 +36,12 @@ class AuthController extends AbstractController
     #[Route('/auth', name: 'auth')]
     public function index(): Response
     {
-        return $this->render('auth/index.html.twig', [
+        return $this->render(
+            'auth/index.html.twig',
+            [
             'controller_name' => 'AuthController',
-        ]);
+            ]
+        );
     }
 
     #[Route('/auth/register', name: 'auth_register', methods: ['POST'])]
@@ -40,23 +54,24 @@ class AuthController extends AbstractController
             $user->setLogin($request->get('login'));
             $user->setPassword($this->hasher->hashPassword($user, $request->get('password')));
 
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
             $data = [
                 'status' => Response::HTTP_OK,
-                'success' => 'User added successfully'
+                'success' => 'User added successfully',
             ];
+
             return $this->response($data);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
 
             $data = [
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-                'errors' => 'Data not valid'
+                'errors' => 'Data not valid',
             ];
+
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -66,13 +81,14 @@ class AuthController extends AbstractController
         return new JsonResponse($data, $status, $headers);
     }
 
-    private function transformJsonBody (Request $request): Request
+    private function transformJsonBody(Request $request): Request
     {
         $data = json_decode($request->getContent(), true);
-        if ($data === null) {
+        if (null === $data) {
             return $request;
         }
         $request->request->replace($data);
+
         return $request;
     }
 }
