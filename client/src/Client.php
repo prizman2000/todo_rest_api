@@ -92,6 +92,44 @@ class Client
         return $curl->response;
     }
 
+    public function add_file($filePath): false|string|null
+    {
+        $curl = new Curl\Curl();
+        $curl->setHeader('Content-Type', 'application/json');
+        $curl->post($this->set_path('/file'), array(
+            'file' => '@'.$filePath
+        ), true);
+
+        return $curl->response;
+    }
+
+    public function get_all_files(): false|string|null
+    {
+        $curl = new Curl\Curl();
+        $curl->setHeader('Content-Type', 'application/json');
+        $curl->get($this->set_path('/file'));
+
+        return $curl->response;
+    }
+
+    public function delete_file($fileName): false|string|null
+    {
+        $curl = new Curl\Curl();
+        $curl->setHeader('Content-Type', 'application/json');
+        $curl->delete($this->set_path('/file/'.$fileName));
+
+        return $curl->response;
+    }
+
+    public function download_file($fileName): false|string|null
+    {
+        $curl = new Curl\Curl();
+        $curl->setHeader('Content-Type', 'application/json');
+        $curl->get($this->set_path('/file/'.$fileName));
+
+        return $curl->response;
+    }
+
     private function set_path($path): string
     {
         return $this->url + $path;
