@@ -4,6 +4,7 @@ namespace App\Service;
 
 class HealthService
 {
+
     private $health;
 
     public function __construct($health)
