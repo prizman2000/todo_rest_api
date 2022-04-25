@@ -1,0 +1,18 @@
+
+.content {
+
+  .my_blogs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 40px;
+
+    .add_in_blog {
+      margin-right: 22px;
+    }
+
+    .add_btn {
+      width: 150px;
+    }
+  }
+}

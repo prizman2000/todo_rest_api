@@ -1,0 +1,13 @@
+
+.auth_page {
+  margin-top: 0px;
+  width: 50%;
+  position: relative;
+
+  .err_msg {
+    position: absolute;
+    bottom: 7px;
+    left: 150px;
+    color: #ff4d4f;
+  }
+}

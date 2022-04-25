@@ -15,14 +15,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AuthController extends AbstractController
+class AuthController extends AppController
 {
     private $logger;
     private $hasher;
@@ -52,6 +50,7 @@ class AuthController extends AbstractController
 
             $user = new User();
             $user->setLogin($request->get('login'));
+            $user->setRole('admin');
             $user->setPassword($this->hasher->hashPassword($user, $request->get('password')));
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -76,19 +75,38 @@ class AuthController extends AbstractController
         }
     }
 
-    private function response($data, $status = Response::HTTP_OK, $headers = []): JsonResponse
+    #[Route('/api/role', name: 'auth_role', methods: ['GET'])]
+    public function check_role(): Response
     {
-        return new JsonResponse($data, $status, $headers);
-    }
+        try {
+            $user = $this->getUser();
 
-    private function transformJsonBody(Request $request): Request
-    {
-        $data = json_decode($request->getContent(), true);
-        if (null === $data) {
-            return $request;
+            if($user)
+            {
+                $role = $user->getRole();
+
+                $data = [
+                    'status' => Response::HTTP_OK,
+                    'role' => $role,
+                    'success' => 'Post added successfully',
+                ];
+
+                return $this->response($data);
+            } else {
+                $data = [
+                    'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                    'errors' => 'Data not valid',
+                ];
+
+                return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        } catch (\Exception) {
+            $error = [
+                'status' => Response::HTTP_UNAUTHORIZED,
+                'errors' => 'Unauthorized',
+            ];
+
+            return $this->response($error, Response::HTTP_UNAUTHORIZED);
         }
-        $request->request->replace($data);
-
-        return $request;
     }
 }
