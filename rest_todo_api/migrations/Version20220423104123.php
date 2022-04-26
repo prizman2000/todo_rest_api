@@ -19,7 +19,7 @@ final class Version20220423104123 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        //$this->addSql('INSERT INTO user (id, name) VALUES (1, 'admin');');
+        // this up() migration is auto-generated, please modify it to your needs
     }
 
     public function down(Schema $schema): void

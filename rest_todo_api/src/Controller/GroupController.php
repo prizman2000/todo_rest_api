@@ -18,14 +18,17 @@ class GroupController extends AppController
     #[Route('/api/group', name: 'group_get_all', methods: ['GET'])]
     public function get_groups(GroupRepository $groupRepository): Response
     {
-        try {
+        try
+        {
             $user = $this->getUser();
             $groups = $groupRepository->findAll();
-
             $groupArray = [];
 
-            foreach ($groups as $group) {
-                if ($group->getOwnerId() === $user->getId()) {
+            foreach ($groups as $group)
+            {
+                if ($group->getOwnerId() === $user->getId())
+                {
+
                     $owner_group = [
                         'id' => $group->getId(),
                         'owner' => true,
@@ -40,14 +43,12 @@ class GroupController extends AppController
                 }
                 array_push($groupArray, $owner_group);
             }
-
             return $this->response($groupArray);
         } catch (\Exception $e) {
             $data = [
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => $e->getMessage(),
             ];
-
             return $this->response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
